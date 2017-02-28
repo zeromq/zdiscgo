@@ -17,5 +17,7 @@
 #include "zdiscgo_library.h"
 
 //  Add your own public definitions here, if you need them
+void
+zdiscgo_test (bool verbose);
 
 #endif

@@ -30,6 +30,7 @@ all_tests [] = {
 #ifdef ZDISCGO_BUILD_DRAFT_API
 // Tests for draft public classes:
     { "zdicgoplugin", zdicgoplugin_test },
+    { "zdiscgo", zdiscgo_test },
 #endif // ZDISCGO_BUILD_DRAFT_API
 #ifdef ZDISCGO_BUILD_DRAFT_API
     { "private_classes", zdiscgo_private_selftest },
@@ -91,7 +92,7 @@ main (int argc, char **argv)
         else
         if (streq (argv [argn], "--number")
         ||  streq (argv [argn], "-n")) {
-            puts ("1");
+            puts ("2");
             return 0;
         }
         else
@@ -99,6 +100,7 @@ main (int argc, char **argv)
         ||  streq (argv [argn], "-l")) {
             puts ("Available tests:");
             puts ("    zdicgoplugin\t\t- draft");
+            puts ("    zdiscgo\t\t- draft");
             puts ("    private_classes\t- draft");
             return 0;
         }

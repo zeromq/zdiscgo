@@ -78,10 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\zdiscgo_library.h" />
-    <ClInclude Include="..\..\..\..\include\zdiscgo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\zdicgoplugin.c">
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zdiscgo.c">
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
   </ItemGroup>

@@ -21,6 +21,7 @@
     
 
     <use project = "czmq" />
+    <actor name = "zdiscgo">Zactor for service discovery with Go plugin support</actor>
     <class name = "zdicgoplugin">Plugin API</class>
 
 </project>

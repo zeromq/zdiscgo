@@ -13,6 +13,8 @@
 # Ignore the source doc texts generated from program sources
 zdicgoplugin.txt
 zdicgoplugin.doc
+zdiscgo.txt
+zdiscgo.doc
 
 # Make sure to track the manually maintained project description
 !*.adoc

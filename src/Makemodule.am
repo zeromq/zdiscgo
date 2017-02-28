@@ -13,12 +13,12 @@ lib_LTLIBRARIES += src/libzdiscgo.la
 pkgconfig_DATA = src/libzdiscgo.pc
 
 include_HEADERS = \
-    include/zdiscgo.h \
     include/zdiscgo_library.h
 
 if ENABLE_DRAFTS
 include_HEADERS += \
-    include/zdicgoplugin.h
+    include/zdicgoplugin.h \
+    include/zdiscgo.h
 
 endif
 src_libzdiscgo_la_SOURCES = \
@@ -26,7 +26,8 @@ src_libzdiscgo_la_SOURCES = \
 
 if ENABLE_DRAFTS
 src_libzdiscgo_la_SOURCES += \
-    src/zdicgoplugin.c
+    src/zdicgoplugin.c \
+    src/zdiscgo.c
 
 endif
 

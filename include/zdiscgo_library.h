@@ -67,6 +67,8 @@
 #ifdef ZDISCGO_BUILD_DRAFT_API
 typedef struct _zdicgoplugin_t zdicgoplugin_t;
 #define ZDICGOPLUGIN_T_DEFINED
+typedef struct _zdiscgo_t zdiscgo_t;
+#define ZDISCGO_T_DEFINED
 #endif // ZDISCGO_BUILD_DRAFT_API
 
 

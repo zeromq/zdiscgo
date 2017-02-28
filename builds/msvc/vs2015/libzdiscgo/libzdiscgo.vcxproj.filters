@@ -10,12 +10,12 @@
     <ClCompile Include="..\..\..\..\src\zdicgoplugin.c">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zdiscgo.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\zdiscgo_library.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\zdiscgo.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

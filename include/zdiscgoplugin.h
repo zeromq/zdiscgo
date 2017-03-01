@@ -1,5 +1,5 @@
 /*  =========================================================================
-    zdicgoplugin - Plugin API
+    zdiscgoplugin - Plugin API
 
     Copyright (c) the Contributors as noted in the AUTHORS file.       
     This file is part of zdiscgo.                                      
@@ -10,25 +10,25 @@
     =========================================================================
 */
 
-#ifndef ZDICGOPLUGIN_H_INCLUDED
-#define ZDICGOPLUGIN_H_INCLUDED
+#ifndef ZDISCGOPLUGIN_H_INCLUDED
+#define ZDISCGOPLUGIN_H_INCLUDED
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 //  @interface
-//  Create a new zdicgoplugin
-ZDISCGO_EXPORT zdicgoplugin_t *
-    zdicgoplugin_new (void);
+//  Create a new zdiscgoplugin
+ZDISCGO_EXPORT zdiscgoplugin_t *
+    zdiscgoplugin_new (void);
 
-//  Destroy the zdicgoplugin
+//  Destroy the zdiscgoplugin
 ZDISCGO_EXPORT void
-    zdicgoplugin_destroy (zdicgoplugin_t **self_p);
+    zdiscgoplugin_destroy (zdiscgoplugin_t **self_p);
 
 //  Self test of this class
 ZDISCGO_EXPORT void
-    zdicgoplugin_test (bool verbose);
+    zdiscgoplugin_test (bool verbose);
 
 //  @end
 

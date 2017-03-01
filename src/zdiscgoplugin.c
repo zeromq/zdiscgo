@@ -1,5 +1,5 @@
 /*  =========================================================================
-    zdicgoplugin - Plugin API
+    zdiscgoplugin - Plugin API
 
     Copyright (c) the Contributors as noted in the AUTHORS file.       
     This file is part of zdiscgo.                                      
@@ -12,7 +12,7 @@
 
 /*
 @header
-    zdicgoplugin - Plugin API
+    zdiscgoplugin - Plugin API
 @discuss
 @end
 */
@@ -21,18 +21,18 @@
 
 //  Structure of our class
 
-struct _zdicgoplugin_t {
+struct _zdiscgoplugin_t {
     int filler;     //  Declare class properties here
 };
 
 
 //  --------------------------------------------------------------------------
-//  Create a new zdicgoplugin
+//  Create a new zdiscgoplugin
 
-zdicgoplugin_t *
-zdicgoplugin_new (void)
+zdiscgoplugin_t *
+zdiscgoplugin_new (void)
 {
-    zdicgoplugin_t *self = (zdicgoplugin_t *) zmalloc (sizeof (zdicgoplugin_t));
+    zdiscgoplugin_t *self = (zdiscgoplugin_t *) zmalloc (sizeof (zdiscgoplugin_t));
     assert (self);
     //  Initialize class properties here
     return self;
@@ -40,14 +40,14 @@ zdicgoplugin_new (void)
 
 
 //  --------------------------------------------------------------------------
-//  Destroy the zdicgoplugin
+//  Destroy the zdiscgoplugin
 
 void
-zdicgoplugin_destroy (zdicgoplugin_t **self_p)
+zdiscgoplugin_destroy (zdiscgoplugin_t **self_p)
 {
     assert (self_p);
     if (*self_p) {
-        zdicgoplugin_t *self = *self_p;
+        zdiscgoplugin_t *self = *self_p;
         //  Free class properties here
         //  Free object itself
         free (self);
@@ -59,15 +59,15 @@ zdicgoplugin_destroy (zdicgoplugin_t **self_p)
 //  Self test of this class
 
 void
-zdicgoplugin_test (bool verbose)
+zdiscgoplugin_test (bool verbose)
 {
-    printf (" * zdicgoplugin: ");
+    printf (" * zdiscgoplugin: ");
 
     //  @selftest
     //  Simple create/destroy test
-    zdicgoplugin_t *self = zdicgoplugin_new ();
+    zdiscgoplugin_t *self = zdiscgoplugin_new ();
     assert (self);
-    zdicgoplugin_destroy (&self);
+    zdiscgoplugin_destroy (&self);
     //  @end
     printf ("OK\n");
 }

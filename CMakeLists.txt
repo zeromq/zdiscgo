@@ -112,7 +112,7 @@ set (zdiscgo_headers
 
 IF (ENABLE_DRAFTS)
     list(APPEND zdiscgo_headers
-        include/zdicgoplugin.h
+        include/zdiscgoplugin.h
         include/zdiscgo.h
     )
 ENDIF (ENABLE_DRAFTS)
@@ -129,7 +129,7 @@ set (zdiscgo_sources
 
 IF (ENABLE_DRAFTS)
     list (APPEND zdiscgo_sources
-        src/zdicgoplugin.c
+        src/zdiscgoplugin.c
         src/zdiscgo.c
     )
 ENDIF (ENABLE_DRAFTS)
@@ -217,7 +217,7 @@ set(TEST_CLASSES
 
 IF (ENABLE_DRAFTS)
     list (APPEND TEST_CLASSES
-    zdicgoplugin
+    zdiscgoplugin
     zdiscgo
     )
 ENDIF (ENABLE_DRAFTS)

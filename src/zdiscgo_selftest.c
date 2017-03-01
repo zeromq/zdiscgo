@@ -29,7 +29,7 @@ static test_item_t
 all_tests [] = {
 #ifdef ZDISCGO_BUILD_DRAFT_API
 // Tests for draft public classes:
-    { "zdicgoplugin", zdicgoplugin_test },
+    { "zdiscgoplugin", zdiscgoplugin_test },
     { "zdiscgo", zdiscgo_test },
 #endif // ZDISCGO_BUILD_DRAFT_API
 #ifdef ZDISCGO_BUILD_DRAFT_API
@@ -99,7 +99,7 @@ main (int argc, char **argv)
         if (streq (argv [argn], "--list")
         ||  streq (argv [argn], "-l")) {
             puts ("Available tests:");
-            puts ("    zdicgoplugin\t\t- draft");
+            puts ("    zdiscgoplugin\t\t- draft");
             puts ("    zdiscgo\t\t- draft");
             puts ("    private_classes\t- draft");
             return 0;

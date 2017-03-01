@@ -17,7 +17,7 @@ include_HEADERS = \
 
 if ENABLE_DRAFTS
 include_HEADERS += \
-    include/zdicgoplugin.h \
+    include/zdiscgoplugin.h \
     include/zdiscgo.h
 
 endif
@@ -26,7 +26,7 @@ src_libzdiscgo_la_SOURCES = \
 
 if ENABLE_DRAFTS
 src_libzdiscgo_la_SOURCES += \
-    src/zdicgoplugin.c \
+    src/zdiscgoplugin.c \
     src/zdiscgo.c
 
 endif

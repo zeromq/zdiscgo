@@ -23,7 +23,7 @@
 
 struct _zdiscgoplugin_t {
     void *handle;
-    char * (*discover)(go_str);
+    char * (*discover)(go_str, go_str);
 };
 
 
@@ -40,7 +40,7 @@ zdiscgoplugin_new (char *libpath)
     assert (self->handle);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
-    self->discover = (char * (*)(go_str)) dlsym(self->handle, "DiscoverEndpoints");
+    self->discover = (char * (*)(go_str, go_str)) dlsym(self->handle, "DiscoverEndpoints");
 #pragma GCC diagnostic pop 
 
     return self;
@@ -50,10 +50,11 @@ zdiscgoplugin_new (char *libpath)
 //  Get endpoint list from a Go library
 
 const char *
-zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url) {
+zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url, char*key) {
 
     go_str discover_url = {url, strlen (url)};
-    char *endpoints = self->discover (discover_url);
+    go_str discover_key = {key, strlen (key)};
+    char *endpoints = self->discover (discover_url, discover_key);
     return endpoints;
 }
 
@@ -87,8 +88,8 @@ zdiscgoplugin_test (bool verbose)
     zdiscgoplugin_t *self = zdiscgoplugin_new ("./go/libmockdiscgo.so");
     assert (self);
 
-    const char *endpoints = zdiscgoplugin_discover_endpoints (self, "");
-    assert (streq ("inproc://iwillnotbemocked", endpoints));
+    const char *endpoints = zdiscgoplugin_discover_endpoints (self, "url", "key");
+    assert (streq ("inproc://url-key", endpoints));
 
     zdiscgoplugin_destroy (&self);
     //  @end

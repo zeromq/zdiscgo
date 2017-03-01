@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: mockdisco
+Description: zdiscgo lib that does very little
+Version: 0.0.1
+Libs: -L${libdir}  -lmockdiscgo
+Cflags: -I${includedir}

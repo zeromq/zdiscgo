@@ -15,7 +15,7 @@ Project zdiscgo aims to ... (short marketing pitch)
 It delivers several programs with their respective man pages:
 
 and public classes in a shared library:
- zdicgoplugin.3
+ zdiscgoplugin.3
 
 Generally you can compile and link against it like this:
 ----

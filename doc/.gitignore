@@ -11,8 +11,8 @@
 *.xml7
 
 # Ignore the source doc texts generated from program sources
-zdicgoplugin.txt
-zdicgoplugin.doc
+zdiscgoplugin.txt
+zdiscgoplugin.doc
 zdiscgo.txt
 zdiscgo.doc
 

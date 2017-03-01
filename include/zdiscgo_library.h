@@ -65,8 +65,8 @@
 //  These classes are stable or legacy and built in all releases
 //  Draft classes are by default not built in stable releases
 #ifdef ZDISCGO_BUILD_DRAFT_API
-typedef struct _zdicgoplugin_t zdicgoplugin_t;
-#define ZDICGOPLUGIN_T_DEFINED
+typedef struct _zdiscgoplugin_t zdiscgoplugin_t;
+#define ZDISCGOPLUGIN_T_DEFINED
 typedef struct _zdiscgo_t zdiscgo_t;
 #define ZDISCGO_T_DEFINED
 #endif // ZDISCGO_BUILD_DRAFT_API
@@ -74,7 +74,7 @@ typedef struct _zdiscgo_t zdiscgo_t;
 
 //  Public classes, each with its own header file
 #ifdef ZDISCGO_BUILD_DRAFT_API
-#include "zdicgoplugin.h"
+#include "zdiscgoplugin.h"
 #endif // ZDISCGO_BUILD_DRAFT_API
 
 #ifdef ZDISCGO_BUILD_DRAFT_API

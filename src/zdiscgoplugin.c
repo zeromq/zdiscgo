@@ -46,10 +46,10 @@ zdiscgoplugin_new (char *libpath)
 const char *
 zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url) {
 
+// FIXME: this is pretty evil but it works for now
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wc++-compat"
-    char * (*discover)(go_str) = dlsym(self->handle, "DiscoverEndpoints");
+    char * (*discover)(go_str) = (char * (*)(go_str)) dlsym(self->handle, "DiscoverEndpoints");
 #pragma GCC diagnostic pop 
 
     go_str discover_url = {url, strlen (url)};

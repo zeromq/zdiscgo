@@ -20,7 +20,7 @@ extern "C" {
 //  @interface
 //  Create a new zdiscgoplugin
 ZDISCGO_EXPORT zdiscgoplugin_t *
-    zdiscgoplugin_new (void);
+    zdiscgoplugin_new (char *libpath);
 
 //  Destroy the zdiscgoplugin
 ZDISCGO_EXPORT void

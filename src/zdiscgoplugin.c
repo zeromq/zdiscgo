@@ -23,6 +23,7 @@
 
 struct _zdiscgoplugin_t {
     void *handle;
+    char * (*discover)(go_str);
 };
 
 
@@ -36,7 +37,12 @@ zdiscgoplugin_new (char *libpath)
     assert (self);
    
     self->handle = dlopen (libpath, RTLD_NOW);
-    assert (self->handle); 
+    assert (self->handle);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+    self->discover = (char * (*)(go_str)) dlsym(self->handle, "DiscoverEndpoints");
+#pragma GCC diagnostic pop 
+
     return self;
 }
 
@@ -46,13 +52,8 @@ zdiscgoplugin_new (char *libpath)
 const char *
 zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url) {
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-    char * (*discover)(go_str) = (char * (*)(go_str)) dlsym(self->handle, "DiscoverEndpoints");
-#pragma GCC diagnostic pop 
-
     go_str discover_url = {url, strlen (url)};
-    char *endpoints = discover (discover_url);
+    char *endpoints = self->discover (discover_url);
     return endpoints;
 }
 

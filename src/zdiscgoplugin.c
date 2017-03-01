@@ -19,9 +19,6 @@
 
 #include "zdiscgo_classes.h"
 
-typedef long long go_int;
-typedef struct{const char *p; go_int len;} go_str;
-
 //  Structure of our class
 
 struct _zdiscgoplugin_t {
@@ -40,8 +37,24 @@ zdiscgoplugin_new (char *libpath)
    
     self->handle = dlopen (libpath, RTLD_NOW);
     assert (self->handle); 
-    printf ("weee: %s", dlerror()); 
     return self;
+}
+
+//  --------------------------------------------------------------------------
+//  Get endpoint list from a Go library
+
+const char *
+zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url) {
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wc++-compat"
+    char * (*discover)(go_str) = dlsym(self->handle, "DiscoverEndpoints");
+#pragma GCC diagnostic pop 
+
+    go_str discover_url = {url, strlen (url)};
+    char *endpoints = discover (discover_url);
+    return endpoints;
 }
 
 
@@ -73,6 +86,10 @@ zdiscgoplugin_test (bool verbose)
     //  Simple create/destroy test
     zdiscgoplugin_t *self = zdiscgoplugin_new ("./go/libmockdiscgo.so");
     assert (self);
+
+    const char *endpoints = zdiscgoplugin_discover_endpoints (self, "");
+    assert (streq ("inproc://iwillnotbemocked", endpoints));
+
     zdiscgoplugin_destroy (&self);
     //  @end
     printf ("OK\n");

@@ -17,6 +17,9 @@
 extern "C" {
 #endif
 
+typedef long long go_int;
+typedef struct{const char *p; go_int len;} go_str;
+
 //  @interface
 //  Create a new zdiscgoplugin
 ZDISCGO_EXPORT zdiscgoplugin_t *

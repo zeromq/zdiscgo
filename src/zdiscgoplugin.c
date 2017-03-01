@@ -19,10 +19,13 @@
 
 #include "zdiscgo_classes.h"
 
+typedef long long go_int;
+typedef struct{const char *p; go_int len;} go_str;
+
 //  Structure of our class
 
 struct _zdiscgoplugin_t {
-    int filler;     //  Declare class properties here
+    void *handle;
 };
 
 
@@ -30,11 +33,14 @@ struct _zdiscgoplugin_t {
 //  Create a new zdiscgoplugin
 
 zdiscgoplugin_t *
-zdiscgoplugin_new (void)
+zdiscgoplugin_new (char *libpath)
 {
     zdiscgoplugin_t *self = (zdiscgoplugin_t *) zmalloc (sizeof (zdiscgoplugin_t));
     assert (self);
-    //  Initialize class properties here
+   
+    self->handle = dlopen (libpath, RTLD_NOW);
+    assert (self->handle); 
+    printf ("weee: %s", dlerror()); 
     return self;
 }
 
@@ -65,7 +71,7 @@ zdiscgoplugin_test (bool verbose)
 
     //  @selftest
     //  Simple create/destroy test
-    zdiscgoplugin_t *self = zdiscgoplugin_new ();
+    zdiscgoplugin_t *self = zdiscgoplugin_new ("./go/libmockdiscgo.so");
     assert (self);
     zdiscgoplugin_destroy (&self);
     //  @end

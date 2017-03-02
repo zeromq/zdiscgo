@@ -16,7 +16,9 @@
 //  Include the project library file
 #include "zdiscgo_library.h"
 
-//  Add your own public definitions here, if you need them
+ZDISCGO_EXPORT void
+zdiscgo_actor (zsock_t *pipe, void *args);
+
 void
 zdiscgo_test (bool verbose);
 

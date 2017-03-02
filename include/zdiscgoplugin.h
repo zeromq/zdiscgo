@@ -25,6 +25,10 @@ typedef struct{const char *p; go_int len;} go_str;
 ZDISCGO_EXPORT zdiscgoplugin_t *
     zdiscgoplugin_new (char *libpath);
 
+// Discover endpoints via service discovery
+ZDISCGO_EXPORT const char *
+    zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url, char *key);
+
 //  Destroy the zdiscgoplugin
 ZDISCGO_EXPORT void
     zdiscgoplugin_destroy (zdiscgoplugin_t **self_p);

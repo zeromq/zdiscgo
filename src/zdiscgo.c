@@ -24,9 +24,9 @@
 struct _zdiscgo_t {
     zsock_t *pipe;              //  Actor command pipe
     zpoller_t *poller;          //  Socket poller
+    zdiscgoplugin_t *plugin;    //  zdiscgoplugin_t reference
     bool terminated;            //  Did caller ask us to quit?
     bool verbose;               //  Verbose logging enabled?
-    //  TODO: Declare properties
 };
 
 
@@ -43,8 +43,6 @@ zdiscgo_new (zsock_t *pipe, void *args)
     self->terminated = false;
     self->poller = zpoller_new (self->pipe, NULL);
 
-    //  TODO: Initialize properties
-
     return self;
 }
 
@@ -59,43 +57,14 @@ zdiscgo_destroy (zdiscgo_t **self_p)
     if (*self_p) {
         zdiscgo_t *self = *self_p;
 
-        //  TODO: Free actor properties
+        zpoller_destroy (&self->poller);
+        zdiscgoplugin_destroy (&self->plugin); 
 
         //  Free object itself
-        zpoller_destroy (&self->poller);
         free (self);
         *self_p = NULL;
     }
 }
-
-
-//  Start this actor. Return a value greater or equal to zero if initialization
-//  was successful. Otherwise -1.
-
-static int
-zdiscgo_start (zdiscgo_t *self)
-{
-    assert (self);
-
-    //  TODO: Add startup actions
-
-    return 0;
-}
-
-
-//  Stop this actor. Return a value greater or equal to zero if stopping 
-//  was successful. Otherwise -1.
-
-static int
-zdiscgo_stop (zdiscgo_t *self)
-{
-    assert (self);
-
-    //  TODO: Add shutdown actions
-
-    return 0;
-}
-
 
 //  Here we handle incoming message from the node
 
@@ -108,18 +77,44 @@ zdiscgo_recv_api (zdiscgo_t *self)
        return;        //  Interrupted
 
     char *command = zmsg_popstr (request);
-    if (streq (command, "START"))
-        zdiscgo_start (self);
-    else
-    if (streq (command, "STOP"))
-        zdiscgo_stop (self);
-    else
-    if (streq (command, "VERBOSE"))
+    if (streq (command, "VERBOSE")) {
         self->verbose = true;
+    }
     else
-    if (streq (command, "$TERM"))
+    if (streq (command, "CONFIGURE")) {
+        
+        if (self->verbose)
+            zsys_debug ("received 'CONFIGURE' command");
+
+        char *libpath = zmsg_popstr (request);
+        self->plugin = zdiscgoplugin_new (libpath);
+        
+        if (self->verbose)
+            zsys_debug ("loaded '%s' library", libpath);
+
+        zsock_signal (self->pipe, 0);
+    }
+    else
+    if (streq (command, "DISCOVER")) {
+
+        char *url = zmsg_popstr (request);
+        char *key = zmsg_popstr (request);
+        
+        if (self->verbose)
+            zsys_debug ("'DISCOVER', '%s', '%s'", url, key);
+
+        const char *endpoints = zdiscgoplugin_discover_endpoints (self->plugin, url, key);
+
+        if (self->verbose)
+            zsys_debug ("'DISCOVER FOUND', '%s'", endpoints);
+
+        zstr_send (self->pipe, endpoints);
+    }
+    else
+    if (streq (command, "$TERM")) {
         //  The $TERM command is send by zactor_destroy() method
         self->terminated = true;
+    }
     else {
         zsys_error ("invalid command '%s'", command);
         assert (false);
@@ -159,8 +154,16 @@ zdiscgo_test (bool verbose)
 {
     printf (" * zdiscgo: ");
     //  @selftest
-    //  Simple create/destroy test
     zactor_t *zdiscgo = zactor_new (zdiscgo_actor, NULL);
+    zstr_send (zdiscgo, "VERBOSE");
+    
+    zsock_send (zdiscgo, "ss", "CONFIGURE", "./go/libmockdiscgo.so");
+    zsock_wait (zdiscgo);
+
+    zsock_send (zdiscgo, "sss", "DISCOVER", "url", "key");
+    
+    char *endpoints = zstr_recv (zdiscgo);
+    assert (streq (endpoints, "inproc://url-key"));
 
     zactor_destroy (&zdiscgo);
     //  @end

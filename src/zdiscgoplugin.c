@@ -50,7 +50,7 @@ zdiscgoplugin_new (char *libpath)
 //  Get endpoint list from a Go library
 
 const char *
-zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url, char*key) {
+zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url, char *key) {
 
     go_str discover_url = {url, strlen (url)};
     go_str discover_key = {key, strlen (key)};

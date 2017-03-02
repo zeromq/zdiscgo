@@ -72,17 +72,28 @@ static void
 zdiscgo_recv_api (zdiscgo_t *self)
 {
     //  Get the whole message of the pipe in one go
+    
     zmsg_t *request = zmsg_recv (self->pipe);
     if (!request)
        return;        //  Interrupted
-
+   
+    
+    // Pop off the first frame of the message, which will be
+    // a char * containing the command
+    
     char *command = zmsg_popstr (request);
+    
+    
     if (streq (command, "VERBOSE")) {
         self->verbose = true;
     }
     else
+
+    //  CONFIGURE command consists of two char * frames.
+    //  FRAME 1: "CONFIGURE"
+    //  FRAME 2: Path to the Go library containing DiscoverEndpoints(url, key string) *C.char 
+    
     if (streq (command, "CONFIGURE")) {
-        
         if (self->verbose)
             zsys_debug ("received 'CONFIGURE' command");
 
@@ -94,9 +105,16 @@ zdiscgo_recv_api (zdiscgo_t *self)
 
         zsock_signal (self->pipe, 0);
     }
+
+    //  DISCOVER command consists of three char * frames.
+    //  FRAME 1: "DISCOVER"
+    //  FRAME 2: A url to a discovery service
+    //  FRAME 3: A key to use to perform a lookup
+    //
+    //  DISCOVER will return a comma delimited list of ZeroMQ endpoints
+    
     else
     if (streq (command, "DISCOVER")) {
-
         char *url = zmsg_popstr (request);
         char *key = zmsg_popstr (request);
         
@@ -110,11 +128,18 @@ zdiscgo_recv_api (zdiscgo_t *self)
 
         zstr_send (self->pipe, endpoints);
     }
+
+    // The $TERM command is a single frame command automatically sent
+    // when zactor_destroy is called.
+    
     else
     if (streq (command, "$TERM")) {
-        //  The $TERM command is send by zactor_destroy() method
         self->terminated = true;
     }
+
+    // We have an invalid command. Since commands only ever come from a different thread
+    // in the same process, something is really wrong, so we assert.
+
     else {
         zsys_error ("invalid command '%s'", command);
         assert (false);
@@ -135,13 +160,13 @@ zdiscgo_actor (zsock_t *pipe, void *args)
         return;          //  Interrupted
 
     //  Signal actor successfully initiated
+
     zsock_signal (self->pipe, 0);
 
     while (!self->terminated) {
         zsock_t *which = (zsock_t *) zpoller_wait (self->poller, 0);
         if (which == self->pipe)
             zdiscgo_recv_api (self);
-       //  Add other sockets when you need them.
     }
     zdiscgo_destroy (&self);
 }

@@ -1,33 +1,55 @@
 # zdiscgo
-CZMQ service discovery zactor with support for Go plugins.
+[CZMQ](http://github.com/zeromq/czmq) service discovery [zactor](http://czmq.zeromq.org/czmq4-0:zactor) with support for [Go plugins](https://medium.com/learning-the-go-programming-language/calling-go-functions-from-other-languages-4c7d8bcc69bf#.hguiewq19).
 
-## Problem Statement
-Problem: I want to use various service discovery mechanisms with CZMQ, such as consul and marathon.
-I am lazy, and these service discovery APIs have nice Go clients.
+## Problem
+I want to use various service discovery mechanisms with CZMQ, such as consul and mesos-dns. These APIs do not have good straight C client libraries but do have excellent Go libraries
+
+## Solution
+zdiscgo - a CZMQ actor service that runs as a thread in a C application, and proxies service discovery lookup calls to dynamically loaded and bound Go libraries.
+
+## Why Did You Do This What Is Wrong With You
+As Larry Wall said, the first great virtue of a programmer is laziness. If C can talk to Go and Go libraries exist for what I want to do, why not use them.
+
+You might feel compelled to point out this all looks like more trouble than just writing some C client libraries. In retort, I would note that Larry Wall also said the first great virtue of a programmer is hubris, of which this project contains plenty ;)
 
 ## Status
 Unstable. API will change.
 
+## Writing a Go Plugin
+
+Go plugins should export a DiscoverEndpoints function:
+
+```go
+package main
+
+import "C"
+import "fmt"
+
+//export DiscoverEndpoints
+func DiscoverEndpoints(url, key string) *C.char {
+	return C.CString(fmt.Sprintf("inproc://%s-%s", url, key))
+}
+j
+func main() {}
+```
+
+## Using the ZActor
+
 ```c
-// start actor
 zactor_t *zdiscgo = zactor_new (zdiscgo_actor, NULL);
-
-// set verbose
 zstr_send (zdiscgo, "VERBOSE");
-
-// load a go library compiled with -build=c-shared
-// that exports a function matching
-// DiscoverEndpoints (url, key string) *C.char
-
-zsock_send (zdiscgo, "ss", "CONFIGURE", "/path/to/lib.go");
+    
+zstr_sendx (zdiscgo, "CONFIGURE", "./go/libmockdiscgo.so", NULL);
 zsock_wait (zdiscgo);
 
-// make a discovery call by passing a discovery service url and a lookup key
-zsock_send (zdiscgo, "sss", "DISCOVER", "http://marathon.example.com", "zeromq-stuff");
-
-// get back a comma delimited  list of zeromq endpoints
+zstr_sendx (zdiscgo, "DISCOVER", "url", "key", NULL);
+   
 char *endpoints = zstr_recv (zdiscgo);
+assert (streq (endpoints, "inproc://url-key"));
 
-// terminate the actor
 zactor_destroy (&zdiscgo);
+
 ```
+
+## License
+MPLv2

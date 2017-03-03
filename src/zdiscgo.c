@@ -157,10 +157,10 @@ zdiscgo_test (bool verbose)
     zactor_t *zdiscgo = zactor_new (zdiscgo_actor, NULL);
     zstr_send (zdiscgo, "VERBOSE");
     
-    zsock_send (zdiscgo, "ss", "CONFIGURE", "./go/libmockdiscgo.so");
+    zstr_sendx (zdiscgo, "CONFIGURE", "./go/libmockdiscgo.so", NULL);
     zsock_wait (zdiscgo);
 
-    zsock_send (zdiscgo, "sss", "DISCOVER", "url", "key");
+    zstr_sendx (zdiscgo, "DISCOVER", "url", "key", NULL);
     
     char *endpoints = zstr_recv (zdiscgo);
     assert (streq (endpoints, "inproc://url-key"));

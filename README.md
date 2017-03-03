@@ -42,27 +42,6 @@ A CZMQ actor is implemented as a thread with a ZMQ_PAIR connection back to it's 
 The zactor instance acts as a zsock_t and you can pass it to any CZMQ method that accepts
 a zsock. Commands are sent to the actor thread in this manner.
 
-### Command Protocol
-zdiscgo_t accepts the following commands:
-
-**VERBOSE** - turns on verbose logging
-```
-|VERBOSE|
-```
-
-**CONFIGURE** - configures the instance, telling it to load a shared library
-to use for service discovery.
-```
-|CONFIGURE|<path to shared library>|
-```
-
-**DISCOVER** - makes a service discovery request, and returns
-a comma delimited list of zeromq endpoints.
-
-```
-|DISCOVER|<url to service discovery system>|<key for requested data>|
-```
-
 ### Example
 ```c
 // Create a zdiscgo instance. This will spin up a new OS level

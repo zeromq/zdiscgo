@@ -10,10 +10,12 @@ zdiscgo - a CZMQ actor service that runs as a thread in a C application, and pro
 ## Why Did You Do This What Is Wrong With You
 As Larry Wall said, the first great virtue of a programmer is laziness. If C can talk to Go and Go libraries exist for what I want to do, why not use them.
 
-You might feel compelled to point out this all looks like more trouble than just writing some C client libraries. In retort, I would note that Larry Wall also said the first great virtue of a programmer is hubris, of which this project contains plenty ;)
+You might feel compelled to point out this all looks like more trouble than just writing some C client libraries, and that
+in fact I was not being lazy at all. In retort, I would note that Larry Wall also said the third great virtue of a programmer
+is hubris, of which this project contains plenty.
 
 ## Status
-Unstable. API will change.
+Draft. API will change.
 
 ## Writing a Go Plugin
 
@@ -34,7 +36,13 @@ func main() {}
 ```
 
 ## Using the ZActor
+### Overview
+The CZMQ zactor [class](http://czmq.zeromq.org/czmq4-0:zactor) provides a simple actor framework. 
+A CZMQ actor is implemented as a thread with a ZMQ_PAIR connection back to it's parent.
+The zactor instance acts as a zsock_t and you can pass it to any CZMQ method that accepts
+a zsock. Commands are sent to the actor thread in this manner.
 
+### Example
 ```c
 // Create a zdiscgo instance. This will spin up a new OS level
 // thread that will handle service discovery requests.
@@ -82,4 +90,4 @@ zactor_destroy (&zdiscgo);
 ```
 
 ## License
-MPLv2
+[MPLv2](https://github.com/taotetek/zdiscgo)

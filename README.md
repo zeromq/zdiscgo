@@ -2,7 +2,7 @@
 [CZMQ](http://github.com/zeromq/czmq) service discovery [zactor](http://czmq.zeromq.org/czmq4-0:zactor) with support for [Go plugins](https://medium.com/learning-the-go-programming-language/calling-go-functions-from-other-languages-4c7d8bcc69bf#.hguiewq19).
 
 ## Problem
-I want to use various service discovery mechanisms with CZMQ, such as consul and mesos-dns. These APIs do not have goog straight C client libraries but do have excellent Go libraries
+I want to use various service discovery mechanisms with CZMQ, such as consul and mesos-dns. These APIs do not have good straight C client libraries but do have excellent Go libraries
 
 ## Solution
 zdiscgo - a CZMQ actor service that runs as a thread in a C application, and proxies service discovery lookup calls to dynamically loaded and bound Go libraries.

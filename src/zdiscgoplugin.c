@@ -37,10 +37,14 @@ zdiscgoplugin_new (char *libpath)
     assert (self);
    
     self->handle = dlopen (libpath, RTLD_NOW);
-    assert (self->handle);
+    if (!self->handle)
+        return NULL;
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-pedantic"
     self->discover = (char * (*)(go_str, go_str)) dlsym(self->handle, "DiscoverEndpoints");
+    if (!self->discover)
+        return NULL;
 #pragma GCC diagnostic pop 
 
     return self;
@@ -84,14 +88,20 @@ zdiscgoplugin_test (bool verbose)
     printf (" * zdiscgoplugin: ");
 
     //  @selftest
+    
     //  Simple create/destroy test
     zdiscgoplugin_t *self = zdiscgoplugin_new ("./go/libmockdiscgo.so");
     assert (self);
 
     const char *endpoints = zdiscgoplugin_discover_endpoints (self, "url", "key");
     assert (streq ("inproc://url-key", endpoints));
-
+    
     zdiscgoplugin_destroy (&self);
+
+    // Test behavior when a bad lib path is passed
+    self = zdiscgoplugin_new ("/does/not/exist");
+    assert (!self);
+
     //  @end
     printf ("OK\n");
 }

@@ -28,7 +28,8 @@ before_install:
 
 script:
 - ./go/util/goinstall.sh --64
-- source ~/.bashrc
+- source /home/travis/.bashrc
+- go version
 - cd go; make; cd -
 - export CFLAGS="-ldl"
 - ./autogen.sh 

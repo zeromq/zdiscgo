@@ -35,58 +35,42 @@ func DiscoverEndpoints(url, key string) *C.char {
 func main() {}
 ```
 
-## Using the ZActor
-### Overview
-The CZMQ zactor [class](http://czmq.zeromq.org/czmq4-0:zactor) provides a simple actor framework. 
-A CZMQ actor is implemented as a thread with a ZMQ_PAIR connection back to it's parent.
-The zactor instance acts as a zsock_t and you can pass it to any CZMQ method that accepts
-a zsock. Commands are sent to the actor thread in this manner.
+## Using zdiscgo
 
-### Example
 ```c
-// Create a zdiscgo instance. This will spin up a new OS level
-// thread that will handle service discovery requests.
+//  Create a zdiscgo instance. This will spin up a new OS level
+//  thread that will handle service discovery requests.
 
 zactor_t *zdiscgo = zactor_new (zdiscgo_actor, NULL);
 
-// We communicate with the service discovery thread over
-// a ZMQ_PAIR socket. You can pass the zdisgco instance
-// to any CZMQ methods that accept zsock_t *. 
-// Let's set the service to verbose mode.
+//  We communicate with the service discovery thread over
+//  a ZMQ_PAIR socket. You can pass the zdisgco instance
+//  to any CZMQ methods that accept zsock_t *. 
+//  Let's set the service to verbose mode.
 
-zstr_send (zdiscgo, "VERBOSE");
+zdiscgo_verbose (zdiscgo);
 
-// Next, let's configure the service by telling it to load 
-// our go shared library. The zstr_sendx command will send
-// multiple string frames. A NULL terminates the message.
+//  Next, let's configure the service by telling it to load 
+//  our go shared library. The zstr_sendx command will send
+//  multiple string frames. A NULL terminates the message.
     
-zstr_sendx (zdiscgo, "CONFIGURE", "./go/libmockdiscgo.so", NULL);
+zdiscgo_load_plugin (zdiscgo, "./go/libmockdiscgo.so");
+assert (rc == 0);
 
-// Wait for a return signal that lets us know the configure
-// has completed.
-
-zsock_wait (zdiscgo);
-
-// Now let's get some endpoints! We send a DISCOVER command
-// that consists of the url of a service discovery service,
-// and the identifer the service should use to find the 
+//  Now let's get some endpoints! We send a DISCOVER command
+//  that consists of the url of a service discovery service,
+//  and the identifer the service should use to find the 
 //  endpoints we want.
 
-zstr_sendx (zdiscgo, "DISCOVER", "http://example.com", "some identifier", NULL);
+char *endpoints = zdiscgo_discover (zdiscgo, "url", "key");
 
-// zdiscgo will send back the endpoints as a comma delimited
-// list compatible with zsock commands.
-   
-char *endpoints = zstr_recv (zdiscgo);
+//  Check that we have the correct response
 
-// Here we make a new ZMQ_SUB socket and pass it our discovered  endpoints.
+assert (streq (endpoints, "inproc://url-key"));
 
-zsock_t *client = zsock_new_sub (endpoints, "some_topic");
-
-// Shut down the zdisgco instance and clean up memory.
+//  Shut down the zdisgco instance and clean up memory.
 
 zactor_destroy (&zdiscgo);
-
 ```
 
 ## License

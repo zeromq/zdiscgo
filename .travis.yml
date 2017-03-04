@@ -27,6 +27,7 @@ before_install:
 - ( cd czmq; ./autogen.sh; ./configure; make check; sudo make install; sudo ldconfig )
 
 script:
+- export CFLAGS="-ldl"
 - ./autogen.sh 
 - ./configure 
 - make check

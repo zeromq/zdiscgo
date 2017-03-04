@@ -28,8 +28,9 @@ before_install:
 
 script:
 - ./go/util/goinstall.sh --64
-- source /home/travis/.bashrc
-- go version
+- /home/travis/.go/bin/go version
+- export GOROOT=/home/travis/.go 
+- export GOPATH=/home/travis/.go
 - cd go; /home/travis/.go/bin/go build -o libmockdiscgo.so -buildmode=c-shared libmockdiscgo.go; cd -
 - export CFLAGS="-ldl"
 - ./autogen.sh 

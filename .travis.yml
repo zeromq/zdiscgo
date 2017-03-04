@@ -30,7 +30,7 @@ script:
 - ./go/util/goinstall.sh --64
 - source /home/travis/.bashrc
 - go version
-- cd go; make; cd -
+- cd go; /home/travis/.go/bin/go build -o libmockdiscgo.so -buildmode=c-shared libmockdiscgo.go; cd -
 - export CFLAGS="-ldl"
 - ./autogen.sh 
 - ./configure 

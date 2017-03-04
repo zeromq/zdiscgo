@@ -39,7 +39,7 @@ zdiscgoplugin_new (char *libpath)
     self->handle = dlopen (libpath, RTLD_NOW);
     assert (self->handle);
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-pedantic"
     self->discover = (char * (*)(go_str, go_str)) dlsym(self->handle, "DiscoverEndpoints");
 #pragma GCC diagnostic pop 
 

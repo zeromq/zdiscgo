@@ -11,16 +11,11 @@
     <include filename = "license.xml" />
     <version major = "0" minor = "1" patch = "0" />
     
-    <target name = "travis" />
-    <target name = "docker" />
     <target name = "cmake" />
     <target name = "autotools" />
-    <target name = "android" />
-    <target name = "qml" />
-    <target name = "vs2015" />
     
-
     <use project = "czmq" />
+
     <actor name = "zdiscgo">Zactor for service discovery with Go plugin support</actor>
     <class name = "zdiscgoplugin">Plugin API</class>
 

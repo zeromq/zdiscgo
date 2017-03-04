@@ -164,7 +164,7 @@ dnl END of PKG_CHECK_MODULES and/or direct tests for libzmq
         [xyes], [
                 AC_SUBST([pkgconfig_name_libzmq],[${found_linkname}])
                 CFLAGS="${libzmq_synthetic_cflags} ${CFLAGS}"
-                LDFLAGS="${libzmq_synthetic_libs} ${LDFLAGS}"
+                LDFLAGS="${libzmq_synthetic_libs} ${LDFLAGS} -Wl, --no-as-needed"
                 LIBS="${libzmq_synthetic_libs} ${LIBS}"
 
                 AC_SUBST([libzmq_CFLAGS],[${libzmq_synthetic_cflags}])
@@ -251,7 +251,7 @@ dnl END of PKG_CHECK_MODULES and/or direct tests for libczmq
         [xyes], [
                 AC_SUBST([pkgconfig_name_libczmq],[${found_linkname}])
                 CFLAGS="${czmq_synthetic_cflags} ${CFLAGS}"
-                LDFLAGS="${czmq_synthetic_libs} ${LDFLAGS}"
+                LDFLAGS="${czmq_synthetic_libs} ${LDFLAGS} -Wl, --no-as-needed"
                 LIBS="${czmq_synthetic_libs} ${LIBS}"
 
                 AC_SUBST([czmq_CFLAGS],[${czmq_synthetic_cflags}])

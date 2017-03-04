@@ -21,10 +21,12 @@ env:
     - CI_CONFIG_QUIET=true
 
 before_install:
-- if [ $TRAVIS_OS_NAME == "osx" ] ; then brew update; brew install binutils ; fi
-- if [ $TRAVIS_OS_NAME == "osx" -a $BUILD_TYPE == "valgrind" ] ; then brew install valgrind ; fi
+- git clone git://github.com/zeromq/libzmq.git
+- ( cd libzmq; ./autogen.sh; ./configure; make check; sudo make install; sudo ldconfig )
+- git clone git://github.com/zeromq/czmq.git
+- ( cd czmq; ./autogen.sh; ./configure; make check; sudo make install; sudo ldconfig )
 
 script:
-  - ./autogen.sh 
-  - ./configure 
-  - make check
+- ./autogen.sh 
+- ./configure 
+- make check

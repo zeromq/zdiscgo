@@ -4,6 +4,8 @@
 
 language: c
 
+sudo: required
+
 cache: ccache
 
 os:

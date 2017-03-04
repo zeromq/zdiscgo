@@ -154,18 +154,50 @@ zdiscgo_test (bool verbose)
 {
     printf (" * zdiscgo: ");
     //  @selftest
+
+    //  Create a zdiscgo instance. This will spin up a new OS level
+    //  thread that will handle service discovery requests.
+
     zactor_t *zdiscgo = zactor_new (zdiscgo_actor, NULL);
+
+    //  We communicate with the service discovery thread over
+    //  a ZMQ_PAIR socket. You can pass the zdisgco instance
+    //  to any CZMQ methods that accept zsock_t *. 
+    //  Let's set the service to verbose mode.
+
     zstr_send (zdiscgo, "VERBOSE");
+
+    //  Next, let's configure the service by telling it to load 
+    //  our go shared library. The zstr_sendx command will send
+    //  multiple string frames. A NULL terminates the message.
     
     zstr_sendx (zdiscgo, "CONFIGURE", "./go/libmockdiscgo.so", NULL);
+
+    //  Wait for a return signal that lets us know the configure
+    //  has completed.
+
     zsock_wait (zdiscgo);
 
+    //  Now let's get some endpoints! We send a DISCOVER command
+    //  that consists of the url of a service discovery service,
+    //  and the identifer the service should use to find the 
+    //  endpoints we want.
+
     zstr_sendx (zdiscgo, "DISCOVER", "url", "key", NULL);
-    
+
+    //  zdiscgo will send back the endpoints as a comma delimited
+    //  list compatible with zsock commands.
+   
     char *endpoints = zstr_recv (zdiscgo);
+
+    //  Check that we have the correct response
+
     assert (streq (endpoints, "inproc://url-key"));
 
+    //  Shut down the zdisgco instance and clean up memory.
+
     zactor_destroy (&zdiscgo);
+
     //  @end
 
     printf ("OK\n");

@@ -62,7 +62,7 @@ zdiscgo_verbose (zactor_t *self) {
 
 int 
 zdiscgo_load_plugin (zactor_t *self, char *path) {
-    zstr_sendx (self, "CONFIGURE", "./go/libmockdiscgo.so", NULL);
+    zstr_sendx (self, "CONFIGURE", path, NULL);
     int rc;
     zsock_recv (self, "i", &rc);
     return rc;

@@ -37,7 +37,8 @@ static zdiscgo_t *
 zdiscgo_new (zsock_t *pipe, void *args)
 {
     zdiscgo_t *self = (zdiscgo_t *) zmalloc (sizeof (zdiscgo_t));
-    assert (self);
+    if (!self)
+        return NULL;
 
     self->pipe = pipe;
     self->terminated = false;
@@ -75,7 +76,9 @@ char *
 zdiscgo_discover (zactor_t *self, char *url, char *key) {
     char *endpoints;
     zpoller_t *poller = zpoller_new (self, NULL);
-    assert (poller);
+    if (!poller)
+        return "";
+
     zstr_sendx (self, "DISCOVER", url, key, NULL);
     zsock_t *which = (zsock_t *) zpoller_wait (poller, 1000);
     if (zpoller_expired (poller)) {

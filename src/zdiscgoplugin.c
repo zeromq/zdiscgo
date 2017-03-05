@@ -72,8 +72,6 @@ zdiscgoplugin_destroy (zdiscgoplugin_t **self_p)
     assert (self_p);
     if (*self_p) {
         zdiscgoplugin_t *self = *self_p;
-        //  Free class properties here
-        //  Free object itself
         free (self);
         *self_p = NULL;
     }

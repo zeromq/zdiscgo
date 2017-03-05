@@ -23,7 +23,7 @@
 
 struct _zdiscgoplugin_t {
     void *handle;
-    char * (*discover)(go_str, go_str);
+    go_str (*discover)(go_str, go_str);
 };
 
 
@@ -42,7 +42,7 @@ zdiscgoplugin_new (char *libpath)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-pedantic"
-    self->discover = (char * (*)(go_str, go_str)) dlsym(self->handle, "DiscoverEndpoints");
+    self->discover = (go_str (*)(go_str, go_str)) dlsym(self->handle, "DiscoverEndpoints");
     if (!self->discover)
         return NULL;
 #pragma GCC diagnostic pop 
@@ -58,8 +58,8 @@ zdiscgoplugin_discover_endpoints (zdiscgoplugin_t *self, char *url, char *key) {
 
     go_str discover_url = {url, strlen (url)};
     go_str discover_key = {key, strlen (key)};
-    char *endpoints = self->discover (discover_url, discover_key);
-    return endpoints;
+    go_str endpoints = self->discover (discover_url, discover_key);
+    return endpoints.p;
 }
 
 

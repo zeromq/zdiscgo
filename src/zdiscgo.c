@@ -123,7 +123,6 @@ zdiscgo_recv_api (zdiscgo_t *self)
     }
     else
     if (streq (command, "CONFIGURE")) {
-        
         if (self->verbose)
             zsys_debug ("received 'CONFIGURE' command");
 
@@ -136,12 +135,12 @@ zdiscgo_recv_api (zdiscgo_t *self)
                 zsys_debug ("loaded plugin: '%s'", libpath);
         } 
         else {
-            rc = 0;
+            rc = 1;
             if (self->verbose)
                 zsys_error ("could not load plugin: '%s'", libpath);
         }
 
-        zsock_signal (self->pipe, rc);
+        zsock_send (self->pipe, "i", rc);
     }
     else
     if (streq (command, "DISCOVER")) {

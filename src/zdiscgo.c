@@ -131,14 +131,14 @@ zdiscgo_recv_api (zdiscgo_t *self)
         int rc; 
         self->plugin = zdiscgoplugin_new (libpath);
         if (self->plugin) {
-            rc = -1;
+            rc = 0;
             if (self->verbose)
-                zsys_error ("could not load plugin: '%s'", libpath);
+                zsys_debug ("loaded plugin: '%s'", libpath);
         } 
         else {
             rc = 0;
             if (self->verbose)
-                zsys_debug ("loaded plugin: '%s'", libpath);
+                zsys_error ("could not load plugin: '%s'", libpath);
         }
 
         zsock_signal (self->pipe, rc);

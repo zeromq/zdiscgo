@@ -27,8 +27,8 @@ package main
 import "C"
 import "fmt"
 
-//export DiscoverEndpoints
-func DiscoverEndpoints(url, key string) *C.char {
+//export ZDiscgoDiscoverEndpoints
+func ZDiscgoDiscoverEndpoints(url, key string) *C.char {
 	return C.CString(fmt.Sprintf("inproc://%s-%s", url, key))
 }
 
@@ -54,7 +54,7 @@ zdiscgo_verbose (zdiscgo);
 //  our go shared library. The zstr_sendx command will send
 //  multiple string frames. A NULL terminates the message.
     
-zdiscgo_load_plugin (zdiscgo, "./go/libmockdiscgo.so");
+int rc = zdiscgo_load_plugin (zdiscgo, "./go/libmockdiscgo.so");
 assert (rc == 0);
 
 //  Now let's get some endpoints! We send a DISCOVER command

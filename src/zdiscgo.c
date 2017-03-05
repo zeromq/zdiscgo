@@ -48,6 +48,47 @@ zdiscgo_new (zsock_t *pipe, void *args)
 
 
 //  --------------------------------------------------------------------------
+//  Set verbose mode
+
+void
+zdiscgo_verbose (zactor_t *self) {
+    zstr_send (self, "VERBOSE");
+}
+
+
+//  --------------------------------------------------------------------------
+//  Load a plugin
+
+int 
+zdiscgo_load_plugin (zactor_t *self, char *path) {
+    zstr_sendx (self, "CONFIGURE", "./go/libmockdiscgo.so", NULL);
+    int rc;
+    zsock_recv (self, "i", &rc);
+    return rc;
+}
+
+
+//  --------------------------------------------------------------------------
+//  Perform a discovery lookup
+
+char * 
+zdiscgo_discover (zactor_t *self, char *url, char *key) {
+    char *endpoints;
+    zpoller_t *poller = zpoller_new (self, NULL);
+    assert (poller);
+    zstr_sendx (self, "DISCOVER", url, key, NULL);
+    zsock_t *which = (zsock_t *) zpoller_wait (poller, 1000);
+    if (zpoller_expired (poller)) {
+        endpoints = "";
+    }
+    else {
+        endpoints = zstr_recv (which);
+    }
+    zpoller_destroy (&poller);
+    return endpoints;
+}
+
+//  --------------------------------------------------------------------------
 //  Destroy the zdiscgo instance
 
 static void
@@ -82,17 +123,24 @@ zdiscgo_recv_api (zdiscgo_t *self)
     }
     else
     if (streq (command, "CONFIGURE")) {
-        
         if (self->verbose)
             zsys_debug ("received 'CONFIGURE' command");
 
         char *libpath = zmsg_popstr (request);
+        int rc; 
         self->plugin = zdiscgoplugin_new (libpath);
-        
-        if (self->verbose)
-            zsys_debug ("loaded '%s' library", libpath);
+        if (self->plugin) {
+            rc = 0;
+            if (self->verbose)
+                zsys_debug ("loaded plugin: '%s'", libpath);
+        } 
+        else {
+            rc = 1;
+            if (self->verbose)
+                zsys_error ("could not load plugin: '%s'", libpath);
+        }
 
-        zsock_signal (self->pipe, 0);
+        zsock_send (self->pipe, "i", rc);
     }
     else
     if (streq (command, "DISCOVER")) {
@@ -165,30 +213,21 @@ zdiscgo_test (bool verbose)
     //  to any CZMQ methods that accept zsock_t *. 
     //  Let's set the service to verbose mode.
 
-    zstr_send (zdiscgo, "VERBOSE");
+    zdiscgo_verbose (zdiscgo);
 
     //  Next, let's configure the service by telling it to load 
     //  our go shared library. The zstr_sendx command will send
     //  multiple string frames. A NULL terminates the message.
     
-    zstr_sendx (zdiscgo, "CONFIGURE", "./go/libmockdiscgo.so", NULL);
-
-    //  Wait for a return signal that lets us know the configure
-    //  has completed.
-
-    zsock_wait (zdiscgo);
+    int rc = zdiscgo_load_plugin (zdiscgo, "./go/libmockdiscgo.so");
+    assert (rc == 0);
 
     //  Now let's get some endpoints! We send a DISCOVER command
     //  that consists of the url of a service discovery service,
     //  and the identifer the service should use to find the 
     //  endpoints we want.
 
-    zstr_sendx (zdiscgo, "DISCOVER", "url", "key", NULL);
-
-    //  zdiscgo will send back the endpoints as a comma delimited
-    //  list compatible with zsock commands.
-   
-    char *endpoints = zstr_recv (zdiscgo);
+    char *endpoints = zdiscgo_discover (zdiscgo, "url", "key");
 
     //  Check that we have the correct response
 

@@ -29,7 +29,7 @@ import "fmt"
 
 //export DiscoverEndpoints
 func DiscoverEndpoints(url, key string) string {
-	return C.CString(fmt.Sprintf("inproc://%s-%s", url, key))
+	return fmt.Sprintf("inproc://%s-%s", url, key)
 }
 
 func main() {}

@@ -42,7 +42,7 @@ zdiscgoplugin_new (char *libpath)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-pedantic"
-    self->discover = (char * (*)(go_str, go_str)) dlsym(self->handle, "DiscoverEndpoints");
+    self->discover = (char * (*)(go_str, go_str)) dlsym(self->handle, "ZDiscgoDiscoverEndpoints");
     if (!self->discover)
         return NULL;
 #pragma GCC diagnostic pop 

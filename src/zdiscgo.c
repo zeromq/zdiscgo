@@ -211,24 +211,16 @@ zdiscgo_test (bool verbose)
 
     zactor_t *zdiscgo = zactor_new (zdiscgo_actor, NULL);
 
-    //  We communicate with the service discovery thread over
-    //  a ZMQ_PAIR socket. You can pass the zdisgco instance
-    //  to any CZMQ methods that accept zsock_t *. 
-    //  Let's set the service to verbose mode.
+    // Set the actor to  verbose mode
 
     zdiscgo_verbose (zdiscgo);
 
-    //  Next, let's configure the service by telling it to load 
-    //  our go shared library. The zstr_sendx command will send
-    //  multiple string frames. A NULL terminates the message.
+    // Load a go library
     
     int rc = zdiscgo_load_plugin (zdiscgo, "./go/libmockdiscgo.so");
     assert (rc == 0);
 
-    //  Now let's get some endpoints! We send a DISCOVER command
-    //  that consists of the url of a service discovery service,
-    //  and the identifer the service should use to find the 
-    //  endpoints we want.
+    // Ask for a list of zeromq endpoints
 
     char *endpoints = zdiscgo_discover (zdiscgo, "url", "key");
 

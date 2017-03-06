@@ -38,39 +38,36 @@ func main() {}
 ## Using zdiscgo
 
 ```c
-//  Create a zdiscgo instance. This will spin up a new OS level
-//  thread that will handle service discovery requests.
+#include <zdiscgo.h>
 
-zactor_t *zdiscgo = zactor_new (zdiscgo_actor, NULL);
+int main (int argc, char *argv [])
+{
+    //  Create a zdiscgo instance. This will spin up a new OS level
+    //  thread that will handle service discovery requests.
 
-//  We communicate with the service discovery thread over
-//  a ZMQ_PAIR socket. You can pass the zdisgco instance
-//  to any CZMQ methods that accept zsock_t *. 
-//  Let's set the service to verbose mode.
+    zactor_t *zdiscgo = zactor_new (zdiscgo_actor, NULL);
 
-zdiscgo_verbose (zdiscgo);
+    // Set the actor to  verbose mode
 
-//  Next, let's configure the service by telling it to load 
-//  our go shared library. The zstr_sendx command will send
-//  multiple string frames. A NULL terminates the message.
+    zdiscgo_verbose (zdiscgo);
+
+    // Load a go library
     
-int rc = zdiscgo_load_plugin (zdiscgo, "./go/libmockdiscgo.so");
-assert (rc == 0);
+    int rc = zdiscgo_load_plugin (zdiscgo, "./go/libmockdiscgo.so");
+    assert (rc == 0);
 
-//  Now let's get some endpoints! We send a DISCOVER command
-//  that consists of the url of a service discovery service,
-//  and the identifer the service should use to find the 
-//  endpoints we want.
+    // Ask for a list of zeromq endpoints
 
-char *endpoints = zdiscgo_discover (zdiscgo, "url", "key");
+    char *endpoints = zdiscgo_discover (zdiscgo, "url", "key");
 
-//  Check that we have the correct response
+    //  Check that we have the correct response
 
-assert (streq (endpoints, "inproc://url-key"));
+    assert (streq (endpoints, "inproc://url-key"));
 
-//  Shut down the zdisgco instance and clean up memory.
+    //  Shut down the zdisgco instance and clean up memory.
 
-zactor_destroy (&zdiscgo);
+    zactor_destroy (&zdiscgo);
+}
 ```
 
 ## License

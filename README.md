@@ -1,5 +1,4 @@
-# zdiscgo
-[CZMQ](http://github.com/zeromq/czmq) service discovery [zactor](http://czmq.zeromq.org/czmq4-0:zactor) with support for [Go plugins](https://medium.com/learning-the-go-programming-language/calling-go-functions-from-other-languages-4c7d8bcc69bf#.hguiewq19).
+# zdiscgo - Go plugin support for service discovery for [CZMQ](https://github.com/zeromq/czmq)
 
 ## Problem
 I want to use various service discovery mechanisms with CZMQ, such as consul and mesos-dns. These APIs do not have good straight C client libraries but do have excellent Go libraries
@@ -17,6 +16,64 @@ is hubris, of which this project contains plenty.
 ## Status
 Draft. API will change.
 
+## Building on Ubuntu
+
+**Installing prerequisites:**
+```
+    sudo apt-get update
+    sudo apt-get install -y \
+    git-all build-essential libtool \
+    pkg-config autotools-dev autoconf automake cmake \
+    uuid-dev
+
+    # only execute this next line if interested in updating the man pages as
+    # well (adds to build time):
+    sudo apt-get install -y asciidoc
+```
+
+**libsodium**
+```
+    git clone --depth 1 -b stable https://github.com/jedisct1/libsodium.git
+    cd libsodium
+    ./autogen.sh && ./configure && make check
+    sudo make install
+    cd ..
+```
+
+**libzmq**
+```
+    git clone git://github.com/zeromq/libzmq.git
+    cd libzmq
+    ./autogen.sh
+    # do not specify "--with-libsodium" if you prefer to use internal tweetnacl
+    # security implementation (recommended for development)
+    ./configure --with-libsodium
+    make check
+    sudo make install
+    sudo ldconfig
+    cd ..
+```
+
+**czmq**
+```
+    git clone git://github.com/zeromq/czmq.git
+    cd czmq
+    ./autogen.sh && ./configure && make check
+    sudo make install
+    sudo ldconfig
+    cd ..
+```
+
+**zdiscgo**
+```
+    git clone git://github.com/zeromq/czmq.git
+    cd czmq
+    ./autogen.sh && ./configure && make check
+    sudo make install
+    sudo ldconfig
+    cd ..
+```
+ 
 ## Writing a Go Plugin
 
 Go plugins should export a DiscoverEndpoints function:

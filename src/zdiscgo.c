@@ -143,6 +143,7 @@ zdiscgo_recv_api (zdiscgo_t *self)
                 zsys_error ("could not load plugin: '%s'", libpath);
         }
 
+        zstr_free (&libpath);
         zsock_send (self->pipe, "i", rc);
     }
     else
@@ -159,6 +160,8 @@ zdiscgo_recv_api (zdiscgo_t *self)
         if (self->verbose)
             zsys_debug ("'DISCOVER FOUND', '%s'", endpoints);
 
+        zstr_free (&url);
+        zstr_free (&key);
         zstr_send (self->pipe, endpoints);
     }
     else

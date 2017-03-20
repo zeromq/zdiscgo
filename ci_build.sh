@@ -26,6 +26,7 @@ case "$CI_TRACE" in
 esac
 
 # Manual piece: set up Go the way we need it here
+# TODO: integrate properly into automake chain
 ./go/util/goinstall.sh --64
 GOROOT=/home/travis/.go
 GOPATH=/home/travis/.go
@@ -43,6 +44,11 @@ if [ "$BUILD_TYPE" == "default" ] || [ "$BUILD_TYPE" == "default-Werror" ] || [ 
     fi
     mkdir -p tmp
     BUILD_PREFIX=$PWD/tmp
+
+    # Manual piece: set up Go the way we need it here
+    # TODO: integrate properly into automake chain
+    mkdir -p "$BUILD_PREFIX/go"
+    cp -pf go/libmockdiscgo.so "$BUILD_PREFIX/go/"
 
     PATH="`echo "$PATH" | sed -e 's,^/usr/lib/ccache/?:,,' -e 's,:/usr/lib/ccache/?:,,' -e 's,:/usr/lib/ccache/?$,,' -e 's,^/usr/lib/ccache/?$,,'2`"
     CCACHE_PATH="$PATH"

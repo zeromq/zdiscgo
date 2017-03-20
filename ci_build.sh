@@ -30,11 +30,8 @@ esac
 GOROOT=/home/travis/.go
 GOPATH=/home/travis/.go
 export GOROOT GOPATH
-
 ${GOROOT}/bin/go version
 ( cd go; ${GOROOT}/bin/go build -o libmockdiscgo.so -buildmode=c-shared libmockdiscgo.go; )
-CFLAGS="-ldl"
-export CFLAGS
 
 if [ "$BUILD_TYPE" == "default" ] || [ "$BUILD_TYPE" == "default-Werror" ] || [ "$BUILD_TYPE" == "valgrind" ]; then
     LANG=C

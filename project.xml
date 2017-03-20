@@ -3,17 +3,17 @@
     description = "ZeroMQ Syslog Normalizer"
     script = "zproject.gsl"
     email = "taotetek@gmail.com"
-    repository = "https://github.com/taotetek/zdiscgo"
-    url = "https://github.com/taotetek/zdiscgo"
+    repository = "https://github.com/zeromq/zdiscgo"
+    url = "https://github.com/zeromq/zdiscgo"
     license = "MPLv2"
-	>
+    >
 
     <include filename = "license.xml" />
     <version major = "0" minor = "1" patch = "0" />
-    
+
     <target name = "cmake" />
     <target name = "autotools" />
-    
+
     <use project = "czmq" />
 
     <actor name = "zdiscgo">Zactor for service discovery with Go plugin support</actor>

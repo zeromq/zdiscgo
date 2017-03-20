@@ -19,6 +19,28 @@ env:
     - CI_TIME=false
     - CI_TRACE=false
     - CI_CONFIG_QUIET=true
+  matrix:
+#    - BUILD_TYPE=go64
+    - BUILD_TYPE=default
+#    - BUILD_TYPE=default-Werror
+#    - BUILD_TYPE=cmake
+#   - BUILD_TYPE=android
+#   - BUILD_TYPE=check-py
+
+matrix:
+  include:
+  - env: BUILD_TYPE=valgrind
+    os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+        - sourceline: 'deb http://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_14.04/ ./'
+          key_url: 'http://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_14.04/Release.key'
+        packages:
+        - valgrind
+        - libczmq-dev
+#        - libzmq3-dev
 
 addons:
   apt:
@@ -26,15 +48,27 @@ addons:
     - sourceline: 'deb http://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_12.04/ ./'
       key_url: 'http://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_12.04/Release.key'
     packages:
+    - asciidoc
+    - xmlto
     - libczmq-dev
+#    - libzmq3-dev
 
-script:
-- ./go/util/goinstall.sh --64
-- /home/travis/.go/bin/go version
-- export GOROOT=/home/travis/.go 
-- export GOPATH=/home/travis/.go
-- cd go; /home/travis/.go/bin/go build -o libmockdiscgo.so -buildmode=c-shared libmockdiscgo.go; cd -
-- export CFLAGS="-ldl"
-- ./autogen.sh 
-- ./configure 
-- make check
+before_install:
+- if [ $TRAVIS_OS_NAME == "osx" ] ; then brew update; brew install binutils ; fi
+- if [ $TRAVIS_OS_NAME == "osx" -a $BUILD_TYPE == "valgrind" ] ; then brew install valgrind ; fi
+
+# Hand off to generated script for each BUILD_TYPE
+script: ./ci_build.sh
+before_deploy: . ./ci_deploy.sh
+deploy:
+  provider: releases
+  api_key:
+    # To encrypt your access token run: `travis encrypt -r user/repo`
+    secure: <encrypted github access token>
+  file_glob: true
+  file: ${ZDISCGO_DEPLOYMENT}
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
+    condition: $TRAVIS_OS_NAME =~ (linux) && $BUILD_TYPE =~ (default)

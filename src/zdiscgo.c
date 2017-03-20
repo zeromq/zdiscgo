@@ -209,6 +209,17 @@ zdiscgo_test (bool verbose)
     printf (" * zdiscgo: ");
     //  @selftest
 
+    // Note: If your selftest reads SCMed fixture data, please keep it in
+    // src/selftest-ro; if your test creates filesystem objects, please
+    // do so under src/selftest-rw. They are defined below along with a
+    // usecase (asert) to make compilers happy.
+    const char *SELFTEST_DIR_RO = "src/selftest-ro";
+    const char *SELFTEST_DIR_RW = "src/selftest-rw";
+    assert (SELFTEST_DIR_RO);
+    assert (SELFTEST_DIR_RW);
+    // std::string str_SELFTEST_DIR_RO = std::string(SELFTEST_DIR_RO);
+    // std::string str_SELFTEST_DIR_RW = std::string(SELFTEST_DIR_RW);
+
     //  Create a zdiscgo instance. This will spin up a new OS level
     //  thread that will handle service discovery requests.
 
@@ -219,9 +230,11 @@ zdiscgo_test (bool verbose)
     zdiscgo_verbose (zdiscgo);
 
     // Load a go library
-    
-    int rc = zdiscgo_load_plugin (zdiscgo, "./go/libmockdiscgo.so");
+    char *libpath = zsys_sprintf ("%s/libmockdiscgo.so", SELFTEST_DIR_RO);
+    assert (libpath != NULL);
+    int rc = zdiscgo_load_plugin (zdiscgo, libpath);
     assert (rc == 0);
+    zstr_free (&libpath);
 
     // Ask for a list of zeromq endpoints
 

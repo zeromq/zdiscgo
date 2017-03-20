@@ -13,6 +13,7 @@
 
     <target name = "cmake" />
     <target name = "autotools" />
+    <target name = "travis" />
 
     <use project = "czmq" />
 

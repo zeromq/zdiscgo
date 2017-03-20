@@ -22,6 +22,7 @@
 
 //  External dependencies
 #include <czmq.h>
+//  NOTE for regeneration: This one seems added manually
 #include <dlfcn.h>
 //  ZDISCGO version macros for compile-time API detection
 #define ZDISCGO_VERSION_MAJOR 0

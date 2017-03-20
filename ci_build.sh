@@ -33,6 +33,8 @@ GOPATH=/home/travis/.go
 export GOROOT GOPATH
 ${GOROOT}/bin/go version
 ( cd go; ${GOROOT}/bin/go build -o libmockdiscgo.so -buildmode=c-shared libmockdiscgo.go; )
+# Make distcheck happy
+cp -pf go/libmockdiscgo.so src/selftest-ro/
 
 if [ "$BUILD_TYPE" == "default" ] || [ "$BUILD_TYPE" == "default-Werror" ] || [ "$BUILD_TYPE" == "valgrind" ]; then
     LANG=C
@@ -44,11 +46,6 @@ if [ "$BUILD_TYPE" == "default" ] || [ "$BUILD_TYPE" == "default-Werror" ] || [ 
     fi
     mkdir -p tmp
     BUILD_PREFIX=$PWD/tmp
-
-    # Manual piece: set up Go the way we need it here
-    # TODO: integrate properly into automake chain
-    mkdir -p "$BUILD_PREFIX/go"
-    cp -pf go/libmockdiscgo.so "$BUILD_PREFIX/go/"
 
     PATH="`echo "$PATH" | sed -e 's,^/usr/lib/ccache/?:,,' -e 's,:/usr/lib/ccache/?:,,' -e 's,:/usr/lib/ccache/?$,,' -e 's,^/usr/lib/ccache/?$,,'2`"
     CCACHE_PATH="$PATH"

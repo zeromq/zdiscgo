@@ -83,8 +83,6 @@ zdiscgoplugin_destroy (zdiscgoplugin_t **self_p)
 void
 zdiscgoplugin_test (bool verbose)
 {
-    char pathbuf[PATH_MAX];
-
     printf (" * zdiscgoplugin: ");
 
     // Note: If your selftest reads SCMed fixture data, please keep it in
@@ -101,11 +99,11 @@ zdiscgoplugin_test (bool verbose)
     //  @selftest
 
     //  Simple create/destroy test
-    int rc;
-    rc = snprintf (pathbuf, sizeof(pathbuf), "%s%s", SELFTEST_DIR_RO, "/libmockdiscgo.so");
-    assert (rc > 0);
-    zdiscgoplugin_t *self = zdiscgoplugin_new (pathbuf);
+    char *libpath = zsys_sprintf ("%s/libmockdiscgo.so", SELFTEST_DIR_RO);
+    assert (libpath != NULL);
+    zdiscgoplugin_t *self = zdiscgoplugin_new (libpath);
     assert (self);
+    zstr_free (&libpath);
 
     const char *endpoints = zdiscgoplugin_discover_endpoints (self, "url", "key");
     assert (streq ("inproc://url-key", endpoints));

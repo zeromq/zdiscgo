@@ -206,8 +206,6 @@ zdiscgo_actor (zsock_t *pipe, void *args)
 void
 zdiscgo_test (bool verbose)
 {
-    char pathbuf[PATH_MAX];
-
     printf (" * zdiscgo: ");
     //  @selftest
 
@@ -232,11 +230,11 @@ zdiscgo_test (bool verbose)
     zdiscgo_verbose (zdiscgo);
 
     // Load a go library
-    int rc;
-    rc = snprintf (pathbuf, sizeof(pathbuf), "%s%s", SELFTEST_DIR_RO, "/libmockdiscgo.so");
-    assert (rc > 0);
-    rc = zdiscgo_load_plugin (zdiscgo, pathbuf);
+    char *libpath = zsys_sprintf ("%s/libmockdiscgo.so", SELFTEST_DIR_RO);
+    assert (libpath != NULL);
+    int rc = zdiscgo_load_plugin (zdiscgo, libpath);
     assert (rc == 0);
+    zstr_free (&libpath);
 
     // Ask for a list of zeromq endpoints
 
